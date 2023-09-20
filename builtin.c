@@ -23,7 +23,8 @@ void builtin_env(char **env)
  * @env: The environment variables
  * @cicles: Number of cycles (or any relevant parameter)
  *
- * This function tokenizes and executes a shell command based on the input buffer.
+ * This function tokenizes and executes a shell command based
+ * on the input buffer.i
  */
 void shell_command(char *buffer, char **av, char **env, int cicles)
 {
