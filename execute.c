@@ -8,7 +8,7 @@
  * @cicles: Number of executed cicles.
  * Return: Nothing.
  */
-void execute(char **command, char *name, char **env, int cicles)
+int execute(char **command, char *name, char **env, int cicles)
 {
 	struct stat st;
 
@@ -22,20 +22,24 @@ void execute(char **command, char *name, char **env, int cicles)
 		{
 			if (execve(command[0], command, env) < 0)
 			{
-				perror(name);  /*Print permission-related error*/
+				perror(command[0]);  /*Print permission-related error*/
 				free_exit(command);
+				return (127);
 			}
 		}
 		else
 		{
-			perror(name);  /*Print other errors*/
+			perror(command[0]);  /*Print other errors*/
 			free_exit(command);
+			return (127);
 		}
 	}
 	else
 	{
-		findAndExecuteCommand(env, command, name, cicles);
+		if (findAndExecuteCommand(env, command, name, cicles) != 0)
+			return (127);
 	}
+	return (0);/*succesful execution*/
 }
 
 
@@ -51,7 +55,7 @@ void execute(char **command, char *name, char **env, int cicles)
  * @name: the program name
  * @cicles: number of times it circles to find a command
  */
-void findAndExecuteCommand(char **env, char **command, char *name, int cicles)
+int findAndExecuteCommand(char **env, char **command, char *name, int cicles)
 {
 	char **pathways;
 	int i = 0;
@@ -69,16 +73,17 @@ void findAndExecuteCommand(char **env, char **command, char *name, int cicles)
 		{
 			if (execve(full_path, command, env) < 0)
 			{
-				perror(name); /* Print permission-related error */
+				perror(command[0]); /* Print permission-related error */
 				free_dp(pathways);
 				free_exit(command);
+				return (1);/*for command not found*/
 			}
-			return;
 		}
 	}
 
 	msgerror(name, cicles, command);
 	free_dp(pathways);
+	return (1);/*for command not found*/
 }
 
 /**
@@ -134,7 +139,7 @@ char **_getPATH(char **env, char **command)
 			if (pathvalue[0] == '\0')
 			{
 				_fprintf(stderr, "./hsh: %d: %s: not found\n", pid, command[0]);
-				exit(127);
+				_exit(127);
 			}
 
 			/*Remove leading and trailing colons if present*/
@@ -157,5 +162,5 @@ char **_getPATH(char **env, char **command)
 
 	/*Handle the case where PATH is not found or is empty*/
 	_fprintf(stderr, "./hsh: %d: %s: not found\n", pid, command[0]);
-	exit(127);
+	_exit(127);
 }

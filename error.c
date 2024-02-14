@@ -30,10 +30,10 @@ void msgerror(char *name, int cicles, char **command)
 	char c;
 
 	c = cicles + '0';
-	write(STDOUT_FILENO, name, _strlen(name));
-	write(STDOUT_FILENO, ": ", 2);
-	write(STDOUT_FILENO, &c, 1);
-	write(STDOUT_FILENO, ": ", 2);
-	write(STDOUT_FILENO, command[0], _strlen(command[0]));
-	write(STDOUT_FILENO, ": not found\n", 12);
+	write(STDERR_FILENO, name, _strlen(name));
+	write(STDERR_FILENO, ": ", 2);
+	write(STDERR_FILENO, &c, 1);
+	write(STDERR_FILENO, ": ", 2);
+	write(STDERR_FILENO, command[0], _strlen(command[0]));
+	write(STDERR_FILENO, ": not found\n", 12);
 }

@@ -13,6 +13,8 @@ void create_child(char **command, char *name, char **env, int cicles)
 	int pid = 0;
 	int status = 0;
 	int wait_error = 0;
+	int exit_status;
+	int exec_status;
 
 	pid = fork();
 	if (pid < 0)
@@ -22,8 +24,9 @@ void create_child(char **command, char *name, char **env, int cicles)
 	}
 	else if (pid == 0)
 	{
-		execute(command, name, env, cicles);
-		free_dp(command);
+		exec_status = execute(command, name, env, cicles);
+                exit(exec_status);
+                /*free_dp(command);*/
 	}
 	else
 	{
@@ -32,27 +35,19 @@ void create_child(char **command, char *name, char **env, int cicles)
 		{
 			free_exit(command);
 		}
-		free_dp(command);
+		else if (WIFEXITED(status))
+		{
+			/*Get the exit status of the child process*/
+			exit_status = WEXITSTATUS(status);
+			free_dp(command);
+
+			if (exit_status != 0)
+			{
+				/*Child process returned a non-zero exit status*/
+				exit(exit_status);
+			}
+		}
 	}
 }
 
 
-/**
- * change_dir - Afunction that changes working directory.
- * @path: The new current working directory.
- * Return: 0 on success, -1 on failure.
- */
-int change_dir(const char *path)
-{
-	char *buf = NULL;
-	size_t size = 1024;
-
-	if (path == NULL)
-		path = getcwd(buf, size);
-	if (chdir(path) == -1)
-	{
-		perror(path);
-		return (98);
-	}
-	return (1);
-}

@@ -26,7 +26,7 @@ extern char **environ;
 int main(int ac, char **av, char **env);
 void prompt(void);
 
-void findAndExecuteCommand(char **env, char **command, char *name, int cicles);
+int findAndExecuteCommand(char **env, char **command, char *name, int cicles);
 void shell_command(char *buffer, char **av, char **env, int cicles);
 
 void handle(int signals);
@@ -38,7 +38,7 @@ void create_child(char **command, char *name, char **env, int cicles);
 int change_dir(const char *path);
 
 
-void execute(char **command, char *name, char **env, int cicles);
+int execute(char **command, char *name, char **env, int cicles);
 void print_env(char **env);
 void builtin_env(char **env);
 char **_getPATH(char **env, char **command);
